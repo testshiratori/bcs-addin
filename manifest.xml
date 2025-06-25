@@ -4,7 +4,7 @@
            xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
            xsi:type="MailApp">
   <Id>448e8e65-5412-4c88-bfd4-0290f4b56b2b</Id>
-  <Version>1.0.0.0</Version>
+  <Version>1.0.0.2</Version>
   <ProviderName>Contoso</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="共有連絡帳の最新化"/>
@@ -124,7 +124,7 @@
         <bt:Image id="Icon.80x80" DefaultValue="https://white-forest-07ab38200.1.azurestaticapps.net/assets/icon-80.png"/>
       </bt:Images>
       <bt:Urls>
-        <!-- <bt:Url id="Commands.Url" DefaultValue="https://white-forest-07ab38200.1.azurestaticapps.net/commands.html"/> -->
+        <bt:Url id="Commands.Url" DefaultValue="https://white-forest-07ab38200.1.azurestaticapps.net/commands.html"/>
         <bt:Url id="Taskpane.Url" DefaultValue="https://white-forest-07ab38200.1.azurestaticapps.net/index.html"/>
       </bt:Urls>
       <bt:ShortStrings>
