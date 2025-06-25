@@ -118,7 +118,9 @@ async function startAuthFlowAndAddContact() {
       `&code_challenge=${code_challenge}&code_challenge_method=S256`;
 
     Office.context.ui.displayDialogAsync(authUrl, { height: 60, width: 30 }, (asyncResult) => {
+      console.log("認証終了");
       const dialog = asyncResult.value;
+      console.log("ダイアログ表示");
       dialog.addEventHandler(Office.EventType.DialogMessageReceived, async (arg) => {
         dialog.close();
         const authCode = arg.message;
@@ -136,6 +138,7 @@ async function startAuthFlowAndAddContact() {
         const tokenJson = await tokenRes.json();
         const accessToken = tokenJson.access_token;
 
+        console.log("連絡先追加");
         // ★ TEST 連絡先を追加
         const res = await fetch("https://graph.microsoft.com/v1.0/me/contacts", {
           method: "POST",
