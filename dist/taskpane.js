@@ -107,6 +107,7 @@ async function startAuthFlowAndAddContact() {
 
   const { code_verifier, code_challenge } = await generatePKCE();
 
+  console.log("認証開始");
   const authUrl = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/authorize` +
     `?client_id=${clientId}` +
     `&response_type=code` +
