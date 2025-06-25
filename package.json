@@ -12,9 +12,6 @@
     "dev_server_port": 3000
   },
   "scripts": {
-    "build": "npx webpack --mode production",
-    "build:dev": "webpack --mode development",
-    "dev-server": "webpack serve --mode development",
     "lint": "office-addin-lint check",
     "lint:fix": "office-addin-lint fix",
     "prettier": "office-addin-lint prettier",
@@ -23,7 +20,6 @@
     "start": "office-addin-debugging start manifest.xml",
     "stop": "office-addin-debugging stop manifest.xml",
     "validate": "office-addin-manifest validate manifest.xml",
-    "watch": "webpack --mode development --watch"
   },
   "dependencies": {
     "core-js": "^3.36.0",
@@ -49,10 +45,7 @@
     "office-addin-prettier-config": "^2.0.1",
     "os-browserify": "^0.3.0",
     "process": "^0.11.10",
-    "source-map-loader": "^5.0.0",
-    "webpack": "^5.99.9",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "5.1.0"
+    "source-map-loader": "^5.0.0"
   },
   "prettier": "office-addin-prettier-config",
   "browserslist": [
