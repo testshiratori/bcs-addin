@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <script>
+      const code = new URLSearchParams(window.location.search).get("code");
+      Office.initialize = () => Office.context.ui.messageParent(code);
+    </script>
+  </body>
+</html>

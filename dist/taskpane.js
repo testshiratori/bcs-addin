@@ -1,23 +1,24 @@
 Office.onReady((info) => {
   if (info.host === Office.HostType.Outlook && Office.context.mailbox?.item) {
-    document.getElementById("btn-send-kintone").onclick = async () => {
-      try {
-        const accessToken = await OfficeRuntime.auth.getAccessToken({
-          allowSignInPrompt: true,
-          forMSGraphAccess: true
-        });
+    // document.getElementById("btn-send-kintone").onclick = async () => {
+    //   try {
+    //     // const accessToken = await OfficeRuntime.auth.getAccessToken({
+    //     //   allowSignInPrompt: true,
+    //     //   forMSGraphAccess: true
+    //     // });
 
-        await startPolling(accessToken);  // ← トークンを渡して処理実行
-      } catch (e) {
-        console.error("SSOエラー:", e);
-      }
-    };
+    //     await startPolling();  // ← トークンを渡して処理実行
+    //   } catch (e) {
+    //     console.error("SSOエラー:", e);
+    //   }
+    // };
+    document.getElementById("btn-send-kintone").onclick = startAuthFlowAndAddContact;
   } else {
     console.warn("アイテムコンテキストが無いため、SSOは使用できません");
   }
 });
 
-async function startPolling(accessToken) {
+async function startPolling() {
   const intervalMs = 10 * 1000;//5 * 60 * 1000; // 5分
 
   setInterval(async () => {
@@ -79,4 +80,80 @@ async function startPolling(accessToken) {
       console.error("ポーリングエラー:", error);
     }
   }, intervalMs);
+}
+
+function base64URLEncode(str) {
+  return str.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+async function sha256(buffer) {
+  const digest = await crypto.subtle.digest('SHA-256', buffer);
+  return new Uint8Array(digest);
+}
+
+async function generatePKCE() {
+  const randomBytes = crypto.getRandomValues(new Uint8Array(32));
+  const code_verifier = base64URLEncode(btoa(String.fromCharCode(...randomBytes)));
+  const challenge = await sha256(new TextEncoder().encode(code_verifier));
+  const code_challenge = base64URLEncode(btoa(String.fromCharCode(...challenge)));
+  return { code_verifier, code_challenge };
+}
+
+async function startAuthFlowAndAddContact() {
+  const tenantId = "c7202a3e-8ddf-4149-ba61-30915b2b6188";
+  const clientId = "d33ca1e9-0900-4a00-a7c7-634127a47e5d";
+  const redirectUri = "https://white-forest-07ab38200.1.azurestaticapps.net/auth-callback.html";
+  const scope = "https://graph.microsoft.com/Contacts.ReadWrite offline_access";
+
+  const { code_verifier, code_challenge } = await generatePKCE();
+
+  const authUrl = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/authorize` +
+    `?client_id=${clientId}` +
+    `&response_type=code` +
+    `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+    `&response_mode=query` +
+    `&scope=${encodeURIComponent(scope)}` +
+    `&code_challenge=${code_challenge}&code_challenge_method=S256`;
+
+  Office.context.ui.displayDialogAsync(authUrl, { height: 60, width: 30 }, (asyncResult) => {
+    const dialog = asyncResult.value;
+    dialog.addEventHandler(Office.EventType.DialogMessageReceived, async (arg) => {
+      dialog.close();
+      const authCode = arg.message;
+      const tokenRes = await fetch(`https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          client_id: clientId,
+          grant_type: "authorization_code",
+          code: authCode,
+          redirect_uri: redirectUri,
+          code_verifier: code_verifier
+        })
+      });
+      const tokenJson = await tokenRes.json();
+      const accessToken = tokenJson.access_token;
+
+      // ★ TEST 連絡先を追加
+      const res = await fetch("https://graph.microsoft.com/v1.0/me/contacts", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${accessToken}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          givenName: "TEST",
+          surname: "User",
+          emailAddresses: [{ address: "test@example.com", name: "TEST User" }],
+          companyName: "Test Co"
+        })
+      });
+
+      if (res.ok) {
+        console.log("連絡先を追加しました");
+      } else {
+        console.error("連絡先追加失敗", await res.text());
+      }
+    });
+  });
 }
