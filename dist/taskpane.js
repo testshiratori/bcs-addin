@@ -105,56 +105,63 @@ async function startAuthFlowAndAddContact() {
   const redirectUri = "https://white-forest-07ab38200.1.azurestaticapps.net/auth-callback.html";
   const scope = "https://graph.microsoft.com/Contacts.ReadWrite offline_access";
 
-  const { code_verifier, code_challenge } = await generatePKCE();
+  try{
+    const { code_verifier, code_challenge } = await generatePKCE();
 
-  console.log("認証開始");
-  const authUrl = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/authorize` +
-    `?client_id=${clientId}` +
-    `&response_type=code` +
-    `&redirect_uri=${encodeURIComponent(redirectUri)}` +
-    `&response_mode=query` +
-    `&scope=${encodeURIComponent(scope)}` +
-    `&code_challenge=${code_challenge}&code_challenge_method=S256`;
+    console.log("認証開始");
+    const authUrl = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/authorize` +
+      `?client_id=${clientId}` +
+      `&response_type=code` +
+      `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+      `&response_mode=query` +
+      `&scope=${encodeURIComponent(scope)}` +
+      `&code_challenge=${code_challenge}&code_challenge_method=S256`;
 
-  Office.context.ui.displayDialogAsync(authUrl, { height: 60, width: 30 }, (asyncResult) => {
-    const dialog = asyncResult.value;
-    dialog.addEventHandler(Office.EventType.DialogMessageReceived, async (arg) => {
-      dialog.close();
-      const authCode = arg.message;
-      const tokenRes = await fetch(`https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          client_id: clientId,
-          grant_type: "authorization_code",
-          code: authCode,
-          redirect_uri: redirectUri,
-          code_verifier: code_verifier
-        })
+    Office.context.ui.displayDialogAsync(authUrl, { height: 60, width: 30 }, (asyncResult) => {
+      const dialog = asyncResult.value;
+      dialog.addEventHandler(Office.EventType.DialogMessageReceived, async (arg) => {
+        dialog.close();
+        const authCode = arg.message;
+        const tokenRes = await fetch(`https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({
+            client_id: clientId,
+            grant_type: "authorization_code",
+            code: authCode,
+            redirect_uri: redirectUri,
+            code_verifier: code_verifier
+          })
+        });
+        const tokenJson = await tokenRes.json();
+        const accessToken = tokenJson.access_token;
+
+        // ★ TEST 連絡先を追加
+        const res = await fetch("https://graph.microsoft.com/v1.0/me/contacts", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${accessToken}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            givenName: "TEST",
+            surname: "User",
+            emailAddresses: [{ address: "test@example.com", name: "TEST User" }],
+            companyName: "Test Co"
+          })
+        });
+
+        if (res.ok) {
+          console.log("連絡先を追加しました");
+        } else {
+          console.error("連絡先追加失敗", await res.text());
+        }
       });
-      const tokenJson = await tokenRes.json();
-      const accessToken = tokenJson.access_token;
-
-      // ★ TEST 連絡先を追加
-      const res = await fetch("https://graph.microsoft.com/v1.0/me/contacts", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${accessToken}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          givenName: "TEST",
-          surname: "User",
-          emailAddresses: [{ address: "test@example.com", name: "TEST User" }],
-          companyName: "Test Co"
-        })
-      });
-
-      if (res.ok) {
-        console.log("連絡先を追加しました");
-      } else {
-        console.error("連絡先追加失敗", await res.text());
-      }
     });
-  });
+  }
+  catch(error){
+    console.error("連絡先追加処理エラー:", error);
+  }
+
+  
 }
