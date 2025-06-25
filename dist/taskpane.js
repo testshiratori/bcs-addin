@@ -1,8 +1,10 @@
 Office.onReady((info) => {
-  if (info.host === Office.HostType.Outlook) {
+  if (info.host === Office.HostType.Outlook && Office.context.mailbox.item) {
     document.getElementById("btn-send-kintone").onclick = async () => {
       startPolling();
     };
+  } else {
+    console.warn("アイテムコンテキストが無いため、SSOは使用できません");
   }
 });
 
