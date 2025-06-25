@@ -12,7 +12,7 @@ async function startPolling() {
   setInterval(async () => {
     try {
       // SSOトークン取得（Microsoft 365のユーザーである必要あり）
-      const accessToken = await OfficeRuntime.auth.getAccessToken({ allowSignInPrompt: true });
+      const accessToken = await OfficeRuntime.auth.getAccessToken({ allowSignInPrompt: true,forMSGraphAccess: true });
 
       // 自分の userId を取得（@より前）+ 特例処理
       const email = Office.context.mailbox.userProfile.emailAddress;
