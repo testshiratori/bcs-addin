@@ -19,7 +19,7 @@
     "signout": "office-addin-dev-settings m365-account logout",
     "start": "office-addin-debugging start manifest.xml",
     "stop": "office-addin-debugging stop manifest.xml",
-    "validate": "office-addin-manifest validate manifest.xml",
+    "validate": "office-addin-manifest validate manifest.xml"
   },
   "dependencies": {
     "core-js": "^3.36.0",
