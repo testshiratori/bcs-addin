@@ -9,11 +9,11 @@
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="共有連絡帳の最新化"/>
   <Description DefaultValue="Adds a custom ribbon button"/>
-  <IconUrl DefaultValue="https://localhost:3000/assets/icon-64.png"/>
-  <HighResolutionIconUrl DefaultValue="https://localhost:3000/assets/icon-128.png"/>
-  <SupportUrl DefaultValue="https://localhost:3000/help"/>
+  <IconUrl DefaultValue="https://white-forest-07ab38200.1.azurestaticapps.net/assets/icon-64.png"/>
+  <HighResolutionIconUrl DefaultValue="https://white-forest-07ab38200.1.azurestaticapps.net/assets/icon-128.png"/>
+  <SupportUrl DefaultValue="https://white-forest-07ab38200.1.azurestaticapps.net/help"/>
   <AppDomains>
-    <AppDomain>https://localhost:3000</AppDomain>
+    <AppDomain>https://white-forest-07ab38200.1.azurestaticapps.net</AppDomain>
   </AppDomains>
 
   <Hosts>
@@ -140,7 +140,7 @@
     <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides/1.1" xsi:type="VersionOverridesV1_1">
       <WebApplicationInfo>
         <Id>d33ca1e9-0900-4a00-a7c7-634127a47e5d</Id>
-        <Resource>https://localhost:3000/d33ca1e9-0900-4a00-a7c7-634127a47e5d</Resource>
+        <Resource>https://white-forest-07ab38200.1.azurestaticapps.net</Resource>
         <Scopes>
           <Scope>openid</Scope>
           <Scope>profile</Scope>
