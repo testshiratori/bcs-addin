@@ -1,20 +1,29 @@
 Office.onReady((info) => {
-  if (info.host === Office.HostType.Outlook && Office.context.mailbox.item) {
+  if (info.host === Office.HostType.Outlook && Office.context.mailbox?.item) {
     document.getElementById("btn-send-kintone").onclick = async () => {
-      startPolling();
+      try {
+        const accessToken = await OfficeRuntime.auth.getAccessToken({
+          allowSignInPrompt: true,
+          forMSGraphAccess: true
+        });
+
+        await startPolling(accessToken);  // ← トークンを渡して処理実行
+      } catch (e) {
+        console.error("SSOエラー:", e);
+      }
     };
   } else {
     console.warn("アイテムコンテキストが無いため、SSOは使用できません");
   }
 });
 
-async function startPolling() {
+async function startPolling(accessToken) {
   const intervalMs = 10 * 1000;//5 * 60 * 1000; // 5分
 
   setInterval(async () => {
     try {
       // SSOトークン取得（Microsoft 365のユーザーである必要あり）
-      const accessToken = await OfficeRuntime.auth.getAccessToken({ allowSignInPrompt: true,forMSGraphAccess: true });
+      //const accessToken = await OfficeRuntime.auth.getAccessToken({ allowSignInPrompt: true,forMSGraphAccess: true });
 
       // 自分の userId を取得（@より前）+ 特例処理
       const email = Office.context.mailbox.userProfile.emailAddress;
