@@ -5,7 +5,16 @@
   <body>
     <script>
       const code = new URLSearchParams(window.location.search).get("code");
-      Office.initialize = () => Office.context.ui.messageParent(code);
+
+      Office.onReady().then(() => {
+        if (Office.context.ui && Office.context.ui.messageParent) {
+          console.log("sending message:", code);
+          Office.context.ui.messageParent(code);
+        } else {
+          console.warn("Office.context.ui.messageParent is not available");
+        }
+      });
+
     </script>
   </body>
 </html>

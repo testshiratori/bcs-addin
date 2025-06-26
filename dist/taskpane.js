@@ -159,6 +159,7 @@ async function startAuthFlowAndAddContact() {
       `&code_challenge=${code_challenge}&code_challenge_method=S256`;
 
     Office.context.ui.displayDialogAsync(authUrl, { height: 60, width: 30 }, (asyncResult) => {
+      console.log("認証コード受信:", arg.message);  // ← このログが出るべき！
       console.log("認証終了");
       const dialog = asyncResult.value;
       console.log("ダイアログ表示");
