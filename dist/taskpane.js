@@ -20,8 +20,7 @@ Office.onReady((info) => {
 });
 
 async function TestNinshou() {
-  const fetch = require('node-fetch');
-  const qs = require('querystring');
+  //const qs = require('querystring');
 
   const tenant = 'c7202a3e-8ddf-4149-ba61-30915b2b6188';
   const clientId = 'f1b7e6ae-5f2b-4a56-ae10-7c6379fa65fb';
@@ -31,14 +30,22 @@ async function TestNinshou() {
   const password = 'shiraPass02';
 
   const tokenUrl = `https://login.microsoftonline.com/${tenant}/oauth2/v2.0/token`;
-  const body = qs.stringify({
+  const body = new URLSearchParams({
     client_id: clientId,
     scope: 'https://graph.microsoft.com/.default',
     username: username,
     password: password,
     grant_type: 'password',
     client_secret: clientSecret
-  });
+  }).toString();
+  // const body = qs.stringify({
+  //   client_id: clientId,
+  //   scope: 'https://graph.microsoft.com/.default',
+  //   username: username,
+  //   password: password,
+  //   grant_type: 'password',
+  //   client_secret: clientSecret
+  // });
 
   fetch(tokenUrl, {
     method: 'POST',
