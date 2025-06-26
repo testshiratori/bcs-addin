@@ -4,11 +4,11 @@
            xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
            xsi:type="MailApp">
   <Id>448e8e65-5412-4c88-bfd4-0290f4b56b2b</Id>
-  <Version>1.0.0.4</Version>
+  <Version>1.0.0.5</Version>
   <ProviderName>Contoso</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="共有連絡帳の最新化"/>
-  <Description DefaultValue="Adds a custom ribbon button Ver.1.0.0.4"/>
+  <DisplayName DefaultValue="共有連絡帳の最新化 Ver.1.0.0.5"/>
+  <Description DefaultValue="Adds a custom ribbon button Ver.1.0.0.5"/>
   <IconUrl DefaultValue="https://white-forest-07ab38200.1.azurestaticapps.net/assets/icon-64.png"/>
   <HighResolutionIconUrl DefaultValue="https://white-forest-07ab38200.1.azurestaticapps.net/assets/icon-128.png"/>
   <SupportUrl DefaultValue="https://white-forest-07ab38200.1.azurestaticapps.net/help"/>
