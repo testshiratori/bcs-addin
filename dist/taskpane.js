@@ -1,63 +1,63 @@
 Office.onReady((info) => {
   if (info.host === Office.HostType.Outlook && Office.context.mailbox?.item) {
-    document.getElementById("btn-send-kintone").onclick = async () => {
-      try {
-        // const accessToken = await OfficeRuntime.auth.getAccessToken({
-        //   allowSignInPrompt: true,
-        //   forMSGraphAccess: true
-        // });
+    // document.getElementById("btn-send-kintone").onclick = async () => {
+    //   try {
+    //     // const accessToken = await OfficeRuntime.auth.getAccessToken({
+    //     //   allowSignInPrompt: true,
+    //     //   forMSGraphAccess: true
+    //     // });
 
-        // await startPolling();  // ← トークンを渡して処理実行
-        await TestNinshou();
-      } catch (e) {
-        console.error("SSOエラー:", e);
-      }
-    };
-    //document.getElementById("btn-send-kintone").onclick = startAuthFlowAndAddContact;
+    //     // await startPolling();  // ← トークンを渡して処理実行
+    //     //await TestNinshou();
+    //   } catch (e) {
+    //     console.error("SSOエラー:", e);
+    //   }
+    // };
+    document.getElementById("btn-send-kintone").onclick = startAuthFlowAndAddContact;
   } else {
     console.warn("アイテムコンテキストが無いため、SSOは使用できません");
   }
 });
 
-async function TestNinshou() {
-  //const qs = require('querystring');
+// async function TestNinshou() {
+//   //const qs = require('querystring');
 
-  const tenant = 'c7202a3e-8ddf-4149-ba61-30915b2b6188';
-  const clientId = 'f1b7e6ae-5f2b-4a56-ae10-7c6379fa65fb';
-  const clientSecret = '2ud8Q~XQ1czEn0cp~h_p3FQOzHwtn9vBSWVNqbU_'; // 必須
-  //900f6a2c-6dd7-492e-9a92-a7de3510e662
-  const username = 'testshiratori@shiratoripharm.onmicrosoft.com';
-  const password = 'shiraPass02';
+//   const tenant = 'c7202a3e-8ddf-4149-ba61-30915b2b6188';
+//   const clientId = 'f1b7e6ae-5f2b-4a56-ae10-7c6379fa65fb';
+//   const clientSecret = '2ud8Q~XQ1czEn0cp~h_p3FQOzHwtn9vBSWVNqbU_'; // 必須
+//   //900f6a2c-6dd7-492e-9a92-a7de3510e662
+//   const username = 'testshiratori@shiratoripharm.onmicrosoft.com';
+//   const password = 'shiraPass02';
 
-  const tokenUrl = `https://login.microsoftonline.com/${tenant}/oauth2/v2.0/token`;
-  const body = new URLSearchParams({
-    client_id: clientId,
-    scope: 'https://graph.microsoft.com/.default',
-    username: username,
-    password: password,
-    grant_type: 'password',
-    client_secret: clientSecret
-  }).toString();
-  // const body = qs.stringify({
-  //   client_id: clientId,
-  //   scope: 'https://graph.microsoft.com/.default',
-  //   username: username,
-  //   password: password,
-  //   grant_type: 'password',
-  //   client_secret: clientSecret
-  // });
+//   const tokenUrl = `https://login.microsoftonline.com/${tenant}/oauth2/v2.0/token`;
+//   const body = new URLSearchParams({
+//     client_id: clientId,
+//     scope: 'https://graph.microsoft.com/.default',
+//     username: username,
+//     password: password,
+//     grant_type: 'password',
+//     client_secret: clientSecret
+//   }).toString();
+//   // const body = qs.stringify({
+//   //   client_id: clientId,
+//   //   scope: 'https://graph.microsoft.com/.default',
+//   //   username: username,
+//   //   password: password,
+//   //   grant_type: 'password',
+//   //   client_secret: clientSecret
+//   // });
 
-  fetch(tokenUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: body
-  })
-  .then(res => res.json())
-  .then(data => {
-    console.log(data.access_token);
-  })
-  .catch(err => console.error(err));
-}
+//   fetch(tokenUrl, {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+//     body: body
+//   })
+//   .then(res => res.json())
+//   .then(data => {
+//     console.log(data.access_token);
+//   })
+//   .catch(err => console.error(err));
+// }
 
 async function startPolling() {
   const intervalMs = 10 * 1000;//5 * 60 * 1000; // 5分
