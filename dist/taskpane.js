@@ -17,14 +17,28 @@ Office.onReady((info) => {
     document.getElementById("btn-send-kintone").onclick = startAuthFlowAndAddContact;
 
     document.getElementById("btn-test-dialog").onclick = () => {
-      Office.context.ui.displayDialogAsync("https://white-forest-07ab38200.1.azurestaticapps.net/test.html", {
-        height: 50,
-        width: 50
+      // Office.context.ui.displayDialogAsync("https://white-forest-07ab38200.1.azurestaticapps.net/test.html", {
+      //   height: 50,
+      //   width: 50
+      // }, function (asyncResult) {
+      //   if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+      //     console.error("ダイアログ失敗:", asyncResult.error.message);
+      //   } else {
+      //     console.log("テストダイアログ成功");
+      //   }
+      // });
+      Office.context.ui.displayDialogAsync("https://white-forest-07ab38200.1.azurestaticapps.net/auth.html", {
+        height: 60, width: 60
       }, function (asyncResult) {
         if (asyncResult.status === Office.AsyncResultStatus.Failed) {
           console.error("ダイアログ失敗:", asyncResult.error.message);
         } else {
-          console.log("テストダイアログ成功");
+          const dialog = asyncResult.value;
+          dialog.addEventHandler(Office.EventType.DialogMessageReceived, (args) => {
+            const data = JSON.parse(args.message);
+            console.log("アクセストークン:", data.token);
+            dialog.close();
+          });
         }
       });
     };

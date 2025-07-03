@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <script>
+    async function sendToken() {
+      const params = new URLSearchParams(location.hash.substring(1));
+      const token = params.get("access_token");
+      if (token && Office.context.ui) {
+        Office.context.ui.messageParent(JSON.stringify({ token }));
+      }
+    }
+    window.onload = sendToken;
+  </script>
+</head>
+<body>
+  <h2>認証成功</h2>
+</body>
+</html>
