@@ -13,7 +13,21 @@ Office.onReady((info) => {
     //     console.error("SSOエラー:", e);
     //   }
     // };
+    
     document.getElementById("btn-send-kintone").onclick = startAuthFlowAndAddContact;
+
+    document.getElementById("btn-test-dialog").onclick = () => {
+      Office.context.ui.displayDialogAsync("https://white-forest-07ab38200.1.azurestaticapps.net/test.html", {
+        height: 50,
+        width: 50
+      }, function (asyncResult) {
+        if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+          console.error("ダイアログ失敗:", asyncResult.error.message);
+        } else {
+          console.log("テストダイアログ成功");
+        }
+      });
+    };
   } else {
     console.warn("アイテムコンテキストが無いため、SSOは使用できません");
   }
