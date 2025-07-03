@@ -127,6 +127,13 @@ function base64URLEncode(str) {
   return str.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
+function base64URLEncodeFromBuffer(buffer) {
+  return btoa(String.fromCharCode(...buffer))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
+}
+
 async function sha256(buffer) {
   const digest = await crypto.subtle.digest('SHA-256', buffer);
   return new Uint8Array(digest);
