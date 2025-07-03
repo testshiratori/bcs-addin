@@ -2,15 +2,24 @@
 <html>
 <head>
   <meta charset="utf-8" />
+  <title>Auth Dialog</title>
+  <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
   <script>
-    async function sendToken() {
-      const params = new URLSearchParams(location.hash.substring(1));
-      const token = params.get("access_token");
-      if (token && Office.context.ui) {
-        Office.context.ui.messageParent(JSON.stringify({ token }));
-      }
-    }
-    window.onload = sendToken;
+    Office.initialize = function () {
+      window.onload = function () {
+        try {
+          const params = new URLSearchParams(location.hash.substring(1));
+          const token = params.get("access_token");
+          if (token) {
+            Office.context.ui.messageParent(JSON.stringify({ token: token }));
+          } else {
+            Office.context.ui.messageParent(JSON.stringify({ error: "アクセストークンが見つかりません" }));
+          }
+        } catch (e) {
+          Office.context.ui.messageParent(JSON.stringify({ error: e.message }));
+        }
+      };
+    };
   </script>
 </head>
 <body>
