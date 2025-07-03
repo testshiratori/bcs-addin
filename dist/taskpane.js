@@ -132,11 +132,21 @@ async function sha256(buffer) {
   return new Uint8Array(digest);
 }
 
+// async function generatePKCE() {
+//   const randomBytes = crypto.getRandomValues(new Uint8Array(32));
+//   const code_verifier = base64URLEncode(btoa(String.fromCharCode(...randomBytes)));
+//   const challenge = await sha256(new TextEncoder().encode(code_verifier));
+//   const code_challenge = base64URLEncode(btoa(String.fromCharCode(...challenge)));
+//   return { code_verifier, code_challenge };
+// }
 async function generatePKCE() {
-  const randomBytes = crypto.getRandomValues(new Uint8Array(32));
-  const code_verifier = base64URLEncode(btoa(String.fromCharCode(...randomBytes)));
-  const challenge = await sha256(new TextEncoder().encode(code_verifier));
-  const code_challenge = base64URLEncode(btoa(String.fromCharCode(...challenge)));
+  const randomBytes = new Uint8Array(32);
+  crypto.getRandomValues(randomBytes);
+
+  const code_verifier = base64URLEncodeFromBuffer(randomBytes);
+  const challengeBuffer = await sha256(new TextEncoder().encode(code_verifier));
+  const code_challenge = base64URLEncodeFromBuffer(new Uint8Array(challengeBuffer));
+
   return { code_verifier, code_challenge };
 }
 
