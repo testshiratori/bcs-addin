@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
-  <head><meta charset="UTF-8" /></head>
+<head>
+  <meta charset="UTF-8" />
   <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
-  <body>
-    <script>
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
       const code = new URLSearchParams(window.location.search).get("code");
 
       Office.onReady().then(() => {
@@ -14,7 +15,8 @@
           console.warn("Office.context.ui.messageParent is not available");
         }
       });
-
-    </script>
-  </body>
+    });
+  </script>
+</head>
+<body></body>
 </html>

@@ -159,11 +159,11 @@ async function startAuthFlowAndAddContact() {
       `&code_challenge=${code_challenge}&code_challenge_method=S256`;
 
     Office.context.ui.displayDialogAsync(authUrl, { height: 60, width: 30 }, (asyncResult) => {
-      console.log("認証コード受信:", arg.message);  // ← このログが出るべき！
       console.log("認証終了");
       const dialog = asyncResult.value;
       console.log("ダイアログ表示");
       dialog.addEventHandler(Office.EventType.DialogMessageReceived, async (arg) => {
+        console.log("認証コード受信:", arg.message);  // ← ここに移動
         dialog.close();
         const authCode = arg.message;
         const tokenRes = await fetch(`https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`, {
