@@ -140,14 +140,12 @@
     <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides/1.1" xsi:type="VersionOverridesV1_1">
       <WebApplicationInfo>
         <Id>d33ca1e9-0900-4a00-a7c7-634127a47e5d</Id>
-        <Resource>https://white-forest-07ab38200.1.azurestaticapps.net</Resource>
+        <Resource>https://graph.microsoft.com</Resource>
         <Scopes>
           <Scope>openid</Scope>
           <Scope>profile</Scope>
-          <Scope>User.Read</Scope>
-          <Scope>Sites.Read.All</Scope>
-          <Scope>Mail.Send</Scope>
-          <Scope>Mail.Read</Scope>
+          <Scope>offline_access</Scope>
+          <Scope>Contacts.ReadWrite</Scope>
         </Scopes>
       </WebApplicationInfo>
     </VersionOverrides>
