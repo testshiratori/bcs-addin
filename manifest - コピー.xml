@@ -144,10 +144,8 @@
         <Scopes>
           <Scope>openid</Scope>
           <Scope>profile</Scope>
-          <Scope>User.Read</Scope>
-          <Scope>Sites.Read.All</Scope>
-          <Scope>Mail.Send</Scope>
-          <Scope>Mail.Read</Scope>
+          <Scope>offline_access</Scope>
+          <Scope>Contacts.ReadWrite</Scope>
         </Scopes>
       </WebApplicationInfo>
     </VersionOverrides>
