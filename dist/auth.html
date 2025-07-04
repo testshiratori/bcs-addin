@@ -5,17 +5,25 @@
   <title>Auth Callback</title>
   <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
   <script>
-  Office.onReady().then(function () {
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get("code");
-    if (code) {
-      document.body.innerHTML = `<h2>認証コードを受信しました。処理中です…</h2>`;
-      Office.context.ui.messageParent(code);
-    } else {
-      document.body.innerHTML = `<h2>エラー：認証コードが取得できませんでした。</h2>`;
-    }
-  });
-</script>
+    Office.onReady().then(function () {
+      window.onload = () => {
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get("code");
+
+        if (code) {
+          document.body.innerHTML = `<h2>認証コードを受信しました。処理中です…</h2>`;
+          try {
+            Office.context.ui.messageParent(code);
+          } catch (e) {
+            document.body.innerHTML = `<h2>メッセージ送信失敗: ${e.message}</h2>`;
+            console.error("messageParent 失敗:", e);
+          }
+        } else {
+          document.body.innerHTML = `<h2>エラー：認証コードが取得できませんでした。</h2>`;
+        }
+      };
+    });
+  </script>
 </head>
 <body>
   <h2>認証コードを受信しました。処理中です…</h2>
