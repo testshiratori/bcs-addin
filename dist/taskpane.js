@@ -222,51 +222,107 @@ async function startAuthFlowAndAddContact() {
       `&scope=${encodeURIComponent(scope)}` +
       `&code_challenge=${code_challenge}&code_challenge_method=S256`;
 
-    Office.context.ui.displayDialogAsync(authUrl, { height: 60, width: 30 }, (asyncResult) => {
-      console.log("認証終了");
-      const dialog = asyncResult.value;
-      console.log("ダイアログ表示");
-      dialog.addEventHandler(Office.EventType.DialogMessageReceived, async (arg) => {
-        console.log("認証コード受信:", arg.message);  // ← ここに移動
-        dialog.close();
-        const authCode = arg.message;
-        const tokenRes = await fetch(`https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: new URLSearchParams({
-            client_id: clientId,
-            grant_type: "authorization_code",
-            code: authCode,
-            redirect_uri: redirectUri,
-            code_verifier: code_verifier
-          })
-        });
-        const tokenJson = await tokenRes.json();
-        const accessToken = tokenJson.access_token;
 
-        console.log("連絡先追加");
-        // ★ TEST 連絡先を追加
-        const res = await fetch("https://graph.microsoft.com/v1.0/me/contacts", {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${accessToken}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            givenName: "TEST",
-            surname: "User",
-            emailAddresses: [{ address: "test@example.com", name: "TEST User" }],
-            companyName: "Test Co"
-          })
-        });
+    Office.context.ui.displayDialogAsync(authUrl, {
+      height: 50,
+      width: 50
+    }, function (asyncResult) {
+      if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+        console.error("❌ ダイアログ失敗:", asyncResult.error.message);
+        alert("ダイアログ失敗: " + asyncResult.error.message);
+      } else {
+        console.log("✅ ダイアログ成功");
+        const dialog = asyncResult.value;
+        
+        console.log("ダイアログ表示");
+        dialog.addEventHandler(Office.EventType.DialogMessageReceived, async (arg) => {
+          console.log("認証コード受信:", arg.message);  // ← ここに移動
+          dialog.close();
+          const authCode = arg.message;
+          const tokenRes = await fetch(`https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`, {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({
+              client_id: clientId,
+              grant_type: "authorization_code",
+              code: authCode,
+              redirect_uri: redirectUri,
+              code_verifier: code_verifier
+            })
+          });
+          const tokenJson = await tokenRes.json();
+          const accessToken = tokenJson.access_token;
 
-        if (res.ok) {
-          console.log("連絡先を追加しました");
-        } else {
-          console.error("連絡先追加失敗", await res.text());
-        }
-      });
+          console.log("連絡先追加");
+          // ★ TEST 連絡先を追加
+          const res = await fetch("https://graph.microsoft.com/v1.0/me/contacts", {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${accessToken}`,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              givenName: "TEST",
+              surname: "User",
+              emailAddresses: [{ address: "test@example.com", name: "TEST User" }],
+              companyName: "Test Co"
+            })
+          });
+
+          if (res.ok) {
+            console.log("連絡先を追加しました");
+          } else {
+            console.error("連絡先追加失敗", await res.text());
+          }
+        });
+      }
     });
+
+    // Office.context.ui.displayDialogAsync(authUrl, { height: 60, width: 30 }, (asyncResult) => {
+    //   console.log("認証終了");
+    //   const dialog = asyncResult.value;
+    //   console.log("ダイアログ表示");
+    //   dialog.addEventHandler(Office.EventType.DialogMessageReceived, async (arg) => {
+    //     console.log("認証コード受信:", arg.message);  // ← ここに移動
+    //     dialog.close();
+    //     const authCode = arg.message;
+    //     const tokenRes = await fetch(`https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`, {
+    //       method: "POST",
+    //       headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    //       body: new URLSearchParams({
+    //         client_id: clientId,
+    //         grant_type: "authorization_code",
+    //         code: authCode,
+    //         redirect_uri: redirectUri,
+    //         code_verifier: code_verifier
+    //       })
+    //     });
+    //     const tokenJson = await tokenRes.json();
+    //     const accessToken = tokenJson.access_token;
+
+    //     console.log("連絡先追加");
+    //     // ★ TEST 連絡先を追加
+    //     const res = await fetch("https://graph.microsoft.com/v1.0/me/contacts", {
+    //       method: "POST",
+    //       headers: {
+    //         "Authorization": `Bearer ${accessToken}`,
+    //         "Content-Type": "application/json"
+    //       },
+    //       body: JSON.stringify({
+    //         givenName: "TEST",
+    //         surname: "User",
+    //         emailAddresses: [{ address: "test@example.com", name: "TEST User" }],
+    //         companyName: "Test Co"
+    //       })
+    //     });
+
+    //     if (res.ok) {
+    //       console.log("連絡先を追加しました");
+    //     } else {
+    //       console.error("連絡先追加失敗", await res.text());
+    //     }
+    //   });
+    // });
   }
   catch(error){
     console.error("連絡先追加処理エラー:", error);
