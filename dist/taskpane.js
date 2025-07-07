@@ -27,18 +27,37 @@ Office.onReady((info) => {
       //     console.log("テストダイアログ成功");
       //   }
       // });
+
+      // 認可エンドポイント情報
+      const tenantId = "c7202a3e-8ddf-4149-ba61-30915b2b6188"; // 例: "common" でもOK
+      const clientId = "d33ca1e9-0900-4a00-a7c7-634127a47e5d";
+      const redirectUri = "https://white-forest-07ab38200.1.azurestaticapps.net/auth.html";
+      const scope = "openid profile email offline_access User.Read"; // 適宜修正
+      const responseType = "code";
+      const responseMode = "query"; // auth.html で受け取れる形式
+
+      // 認可URL生成
+      const authUrl = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/authorize` +
+        `?client_id=${clientId}` +
+        `&response_type=${responseType}` +
+        `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+        `&response_mode=${responseMode}` +
+        `&scope=${encodeURIComponent(scope)}` +
+        `&state=12345`; // stateは任意
+
+
       Office.context.ui.displayDialogAsync("https://white-forest-07ab38200.1.azurestaticapps.net/auth.html", {
         height: 60, width: 60
       }, function (asyncResult) {
         if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-          console.error("ダイアログ失敗:", asyncResult.error.message);
+        console.error("ダイアログ表示失敗：", asyncResult.error.message);
         } else {
-          const dialog = asyncResult.value;
-          dialog.addEventHandler(Office.EventType.DialogMessageReceived, (args) => {
-            const data = JSON.parse(args.message);
-            console.log("アクセストークン:", data.token);
-            dialog.close();
-          });
+            const dialog = asyncResult.value;
+            dialog.addEventHandler(Office.EventType.DialogMessageReceived, (args) => {
+                const data = JSON.parse(args.message);
+                console.log("アクセストークン:", data.token);
+                dialog.close();
+            });
         }
       });
     };
