@@ -1,29 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
-  <meta charset="utf-8" />
-  <title>Auth Callback</title>
+  <meta charset="UTF-8" />
+  <title>Auth Redirect → Microsoft Login</title>
+  <!-- Office.js は messageParent を使うために必須 -->
   <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
   <script>
-    Office.onReady().then(function () {
-      const params = new URLSearchParams(window.location.search);
-      const code = params.get("code");
-
-      if (code) {
-        document.body.innerHTML = `<h2>認証コードを受信しました。処理中です…</h2>`;
-        try {
-          Office.context.ui.messageParent(code);
-        } catch (e) {
-          document.body.innerHTML = `<h2>メッセージ送信失敗: ${e.message}</h2>`;
-          console.error("messageParent 失敗:", e);
-        }
+    /**
+     * 1. taskpane.js から sessionStorage に保存された authUrl を取り出す
+     * 2. 見つかったらそのまま location.href = authUrl で Microsoft 認可エンドポイントへ遷移
+     * 3. 見つからない場合はエラーメッセージを画面表示
+     */
+    Office.onReady().then(() => {
+      const authUrl = sessionStorage.getItem("authUrl");
+      if (authUrl) {
+        /* すぐにリダイレクト（Office ダイアログ内なので OK）*/
+        window.location.replace(authUrl);
       } else {
-        document.body.innerHTML = `<h2>エラー：認証コードが取得できませんでした。</h2>`;
+        document.body.innerHTML =
+          "<h2 style='color:red'>authUrl が取得できませんでした。</h2>";
+        console.error("authUrl が sessionStorage に存在しません");
       }
     });
   </script>
 </head>
 <body>
-  <h2>認証コードを受信しました。処理中です…</h2>
+  リダイレクト中...
 </body>
 </html>
