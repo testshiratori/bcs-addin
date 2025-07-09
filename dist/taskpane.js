@@ -1,5 +1,12 @@
 Office.onReady(() => {
-  document.getElementById("btn-auth").onclick = runAuthFlow;
+  window.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("btn-auth");
+    if (btn) {
+      btn.onclick = runAuthFlow;
+    } else {
+      console.error("btn-auth ボタンが見つかりません");
+    }
+  });
 });
 
 // 固定情報（アプリ登録内容に応じて書き換えてください）
