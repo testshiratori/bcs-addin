@@ -2,24 +2,20 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>Auth Redirect → Microsoft Login</title>
-  <!-- Office.js は messageParent を使うために必須 -->
+  <title>Auth Redirect → Microsoft Login</title>
   <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
   <script>
-    /**
-     * 1. taskpane.js から sessionStorage に保存された authUrl を取り出す
-     * 2. 見つかったらそのまま location.href = authUrl で Microsoft 認可エンドポイントへ遷移
-     * 3. 見つからない場合はエラーメッセージを画面表示
-     */
     Office.onReady().then(() => {
-      const authUrl = sessionStorage.getItem("authUrl");
+      const params = new URLSearchParams(window.location.search);
+      const authUrl = params.get("authUrl");
+
       if (authUrl) {
-        /* すぐにリダイレクト（Office ダイアログ内なので OK）*/
-        window.location.replace(authUrl);
+        console.log("✅ auth.html: リダイレクト開始 →", authUrl);
+        window.location.replace(decodeURIComponent(authUrl));
       } else {
         document.body.innerHTML =
-          "<h2 style='color:red'>authUrl が取得できませんでした。</h2>";
-        console.error("authUrl が sessionStorage に存在しません");
+          "<h2 style='color:red'>authUrl が指定されていません</h2>";
+        console.error("authUrl パラメータが見つかりません");
       }
     });
   </script>

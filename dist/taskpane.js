@@ -36,9 +36,12 @@ async function runAuthFlow() {
   // セッションストレージに認可URLを保存（auth.html で利用）
   sessionStorage.setItem("authUrl", authUrl);
 
+  const encodedAuthUrl = encodeURIComponent(authUrl);
+  const dialogUrl = `https://white-forest-07ab38200.1.azurestaticapps.net/auth.html?authUrl=${encodedAuthUrl}`;
+
   // 認証ダイアログを auth.html 経由で表示
   Office.context.ui.displayDialogAsync(
-    "https://white-forest-07ab38200.1.azurestaticapps.net/auth.html",
+    dialogUrl,
     { height: 50, width: 50 },
     (asyncResult) => {
       if (asyncResult.status === Office.AsyncResultStatus.Failed) {
