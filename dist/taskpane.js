@@ -11,7 +11,7 @@ Office.onReady(() => {
 // 固定情報（アプリ登録内容に応じて書き換えてください）
 const tenantId    = "c7202a3e-8ddf-4149-ba61-30915b2b6188";
 const clientId    = "d33ca1e9-0900-4a00-a7c7-634127a47e5d";
-const redirectUri = "https://white-forest-07ab38200.1.azurestaticapps.net/auth-callback.html";
+const redirectUri = "https://white-forest-07ab38200.1.azurestaticapps.net/auth.html";
 const scope       = "openid profile email offline_access User.Read";
 const responseType = "code";
 const responseMode = "query";
