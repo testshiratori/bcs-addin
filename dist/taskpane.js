@@ -45,6 +45,7 @@ async function runAuthFlow() {
 
   const encodedAuthUrl = encodeURIComponent(authUrl);
   const dialogUrl = authUrl;
+  console.log("表示するURL: ", dialogUrl);
   // const dialogUrl = `https://white-forest-07ab38200.1.azurestaticapps.net/auth.html?authUrl=${encodedAuthUrl}`;
 
   // 認証ダイアログを auth.html 経由で表示
