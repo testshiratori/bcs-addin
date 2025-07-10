@@ -5,16 +5,28 @@
   <title>Auth Redirect → Microsoft Login</title>
   <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
   <script>
-    Office.onReady().then(() => {
-      const params = new URLSearchParams(window.location.search);
-      const authUrl = params.get("authUrl");
+    // Office.onReady().then(() => {
+    //   const params = new URLSearchParams(window.location.search);
+    //   const authUrl = params.get("authUrl");
 
-      if (authUrl) {
+    //   if (authUrl) {
+    //     console.log("✅ auth.html: リダイレクト開始 →", authUrl);
+    //     window.location.replace(decodeURIComponent(authUrl));
+    //   } else {
+    //     document.body.innerHTML =
+    //       "<h2 style='color:red'>authUrl が指定されていません</h2>";
+    //     console.error("authUrl パラメータが見つかりません");
+    //   }
+    // });
+    Office.onReady().then(() => {
+    const params = new URLSearchParams(window.location.search);
+    const authUrl = params.get("authUrl");
+
+    if (authUrl) {
         console.log("✅ auth.html: リダイレクト開始 →", authUrl);
         window.location.replace(decodeURIComponent(authUrl));
       } else {
-        document.body.innerHTML =
-          "<h2 style='color:red'>authUrl が指定されていません</h2>";
+        document.body.innerHTML = "<h2 style='color:red'>authUrl が指定されていません</h2>";
         console.error("authUrl パラメータが見つかりません");
       }
     });
