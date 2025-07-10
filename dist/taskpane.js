@@ -1,10 +1,10 @@
 Office.onReady(() => {
-  const btn = document.getElementById("btn-test-dialog");
+  const btn = document.getElementById("btn-send-kintone");
   if (btn) {
     console.log("✅ ボタン見つかりました");
     btn.onclick = runAuthFlow;
   } else {
-    console.error("❌ btn-test-dialog ボタンが見つかりません");
+    console.error("❌ btn-send-kintone ボタンが見つかりません");
   }
 });
 
