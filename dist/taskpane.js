@@ -129,19 +129,22 @@ async function fetchCardStatusForCurrentUser(accessToken, userPrincipalName) {
   // プリンシパルIDの@より前を抽出
   const userId = userPrincipalName.split("@")[0];
 
-  // サイトIDを取得
-  const siteRes = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteHostname}:${sitePath}`, {
-    headers: { Authorization: `Bearer ${accessToken}` }
-  });
-  const siteJson = await siteRes.json();
-  const siteId = siteJson.id;
+  // // サイトIDを取得
+  // const siteRes = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteHostname}:${sitePath}`, {
+  //   headers: { Authorization: `Bearer ${accessToken}` }
+  // });
+  // const siteJson = await siteRes.json();
+  // const siteId = siteJson.id;
 
-  // リストIDを取得
-  const listRes = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listName}`, {
-    headers: { Authorization: `Bearer ${accessToken}` }
-  });
-  const listJson = await listRes.json();
-  const listId = listJson.id;
+  // // リストIDを取得
+  // const listRes = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listName}`, {
+  //   headers: { Authorization: `Bearer ${accessToken}` }
+  // });
+  // const listJson = await listRes.json();
+  // const listId = listJson.id;
+
+  const siteId = "320b6b44-40b6-4265-b314-afdba6eb20ba"; // サイトID（同時に取得されている）
+  const listId = "e1999f46-92c8-4978-bb3c-0f5826e7143f"; // リストID（今わかった値）
 
   // リストアイテムを取得（filter）
   const query = `$filter=fields/user_id eq '${userId}' and fields/is_fetched eq false`;
