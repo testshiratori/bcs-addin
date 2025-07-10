@@ -146,6 +146,7 @@
           <Scope>profile</Scope>
           <Scope>offline_access</Scope>
           <Scope>Contacts.ReadWrite</Scope>
+          <Scope>Sites.Read.All</Scope>
         </Scopes>
       </WebApplicationInfo>
     </VersionOverrides>
