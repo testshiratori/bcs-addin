@@ -1,10 +1,10 @@
 Office.onReady(() => {
   window.addEventListener("DOMContentLoaded", () => {
-    const btn = document.getElementById("btn-auth");
+    const btn = document.getElementById("btn-test-dialog");
     if (btn) {
       btn.onclick = runAuthFlow;
     } else {
-      console.error("btn-auth ボタンが見つかりません");
+      console.error("btn-test-dialog ボタンが見つかりません");
     }
   });
 });
