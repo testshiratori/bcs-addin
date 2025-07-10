@@ -44,7 +44,8 @@ async function runAuthFlow() {
   sessionStorage.setItem("authUrl", authUrl);
 
   const encodedAuthUrl = encodeURIComponent(authUrl);
-  const dialogUrl = `https://white-forest-07ab38200.1.azurestaticapps.net/auth.html?authUrl=${encodedAuthUrl}`;
+  const dialogUrl = authUrl;
+  // const dialogUrl = `https://white-forest-07ab38200.1.azurestaticapps.net/auth.html?authUrl=${encodedAuthUrl}`;
 
   // 認証ダイアログを auth.html 経由で表示
   Office.context.ui.displayDialogAsync(
