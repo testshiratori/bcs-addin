@@ -146,6 +146,7 @@ async function fetchCardStatusForCurrentUser(accessToken, userPrincipalName) {
   const siteId = "320b6b44-40b6-4265-b314-afdba6eb20ba"; // サイトID（同時に取得されている）
   const listId = "e1999f46-92c8-4978-bb3c-0f5826e7143f"; // リストID（今わかった値）
 
+  console.log("アクセストークン:",accessToken);
   // リストアイテムを取得（filter）
   const query = `$filter=fields/user_id eq '${userId}' and fields/is_fetched eq false`;
   const itemsRes = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items?expand=fields&${query}`, {
