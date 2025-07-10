@@ -21,13 +21,17 @@
     Office.onReady().then(() => {
       const params = new URLSearchParams(window.location.search);
       const code = params.get("code");
+      const authUrl = params.get("authUrl");
 
       if (code) {
-        console.log("✅ 認可コード受信:", code);
-        Office.context.ui.messageParent(code);  // 認可コードを taskpane に返す
+        console.log("✅ 認可コード取得:", code);
+        Office.context.ui.messageParent(code);  // 認可コードを親に返す
+      } else if (authUrl) {
+        console.log("🔄 認可ページにリダイレクト開始 →", authUrl);
+        window.location.replace(decodeURIComponent(authUrl));  // Microsoft 認可ページへ遷移
       } else {
-        document.body.innerHTML = "<h2 style='color:red'>認可コードが指定されていません</h2>";
-        console.error("❌ 認可コードが見つかりません");
+        console.error("❌ code も authUrl も指定されていません");
+        document.body.innerHTML = "<h2 style='color:red'>認証情報がありません</h2>";
       }
     });
   </script>
