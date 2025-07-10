@@ -1,12 +1,11 @@
 Office.onReady(() => {
-  window.addEventListener("DOMContentLoaded", () => {
-    const btn = document.getElementById("btn-test-dialog");
-    if (btn) {
-      btn.onclick = runAuthFlow;
-    } else {
-      console.error("btn-test-dialog ボタンが見つかりません");
-    }
-  });
+  const btn = document.getElementById("btn-test-dialog");
+  if (btn) {
+    console.log("✅ ボタン見つかりました");
+    btn.onclick = runAuthFlow;
+  } else {
+    console.error("❌ btn-test-dialog ボタンが見つかりません");
+  }
 });
 
 // 固定情報（アプリ登録内容に応じて書き換えてください）
@@ -25,6 +24,7 @@ let code_challenge = "";
  * 認証フロー実行：ダイアログ表示 → コード受信 → トークン取得
  */
 async function runAuthFlow() {
+  console.log("✅ runAuthFlow 開始"); // ← これが出ればイベント発火成功
   // PKCEコード生成
   await generatePKCE();
 
