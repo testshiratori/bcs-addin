@@ -116,6 +116,41 @@ async function callGraphApi(accessToken) {
   });
   const profile = await res.json();
   console.log("✅ ユーザープロファイル:", profile);
+
+  await fetchCardStatusForCurrentUser(accessToken,profile.userPrincipalName);
+}
+
+async function fetchCardStatusForCurrentUser(accessToken, userPrincipalName) {
+  const siteHostname = "shiratoripharm.sharepoint.com";
+  const sitePath = "/sites/コミュニケーションサイト";
+  const listName = "trn_card_fetch_status";
+
+  // プリンシパルIDの@より前を抽出
+  const userId = userPrincipalName.split("@")[0];
+
+  // サイトIDを取得
+  const siteRes = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteHostname}:${sitePath}`, {
+    headers: { Authorization: `Bearer ${accessToken}` }
+  });
+  const siteJson = await siteRes.json();
+  const siteId = siteJson.id;
+
+  // リストIDを取得
+  const listRes = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listName}`, {
+    headers: { Authorization: `Bearer ${accessToken}` }
+  });
+  const listJson = await listRes.json();
+  const listId = listJson.id;
+
+  // リストアイテムを取得（filter）
+  const query = `$filter=fields/user_id eq '${userId}' and fields/is_fetched eq false`;
+  const itemsRes = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items?expand=fields&${query}`, {
+    headers: { Authorization: `Bearer ${accessToken}` }
+  });
+  const itemsJson = await itemsRes.json();
+
+  console.log("対象アイテム:", itemsJson.value);
+  return itemsJson.value;
 }
 
 /**
