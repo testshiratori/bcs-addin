@@ -19,15 +19,15 @@
     //   }
     // });
     Office.onReady().then(() => {
-    const params = new URLSearchParams(window.location.search);
-    const authUrl = params.get("authUrl");
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("code");
 
-    if (authUrl) {
-        console.log("✅ auth.html: リダイレクト開始 →", authUrl);
-        window.location.replace(decodeURIComponent(authUrl));
+      if (code) {
+        console.log("✅ 認可コード受信:", code);
+        Office.context.ui.messageParent(code);  // 認可コードを taskpane に返す
       } else {
-        document.body.innerHTML = "<h2 style='color:red'>authUrl が指定されていません</h2>";
-        console.error("authUrl パラメータが見つかりません");
+        document.body.innerHTML = "<h2 style='color:red'>認可コードが指定されていません</h2>";
+        console.error("❌ 認可コードが見つかりません");
       }
     });
   </script>
