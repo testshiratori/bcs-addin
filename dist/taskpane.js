@@ -122,7 +122,8 @@ async function callGraphApi(accessToken) {
 
 async function fetchCardStatusForCurrentUser(accessToken, userPrincipalName) {
   const siteHostname = "shiratoripharm.sharepoint.com";
-  const sitePath = "/sites/コミュニケーションサイト";
+  const sitePath = "/sites/" + encodeURIComponent("コミュニケーションサイト");
+  // const sitePath = "/sites/コミュニケーションサイト";
   const listName = "trn_card_fetch_status";
 
   // プリンシパルIDの@より前を抽出
