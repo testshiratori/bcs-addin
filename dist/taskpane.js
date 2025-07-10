@@ -149,11 +149,18 @@ async function fetchCardStatusForCurrentUser(accessToken, userPrincipalName) {
   console.log("アクセストークン:",accessToken);
   // リストアイテムを取得（filter）
   const query = `$filter=fields/user_id eq '${userId}' and fields/is_fetched eq false`;
-  const itemsRes = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items?expand=fields&${query}`, {
-    headers: { Authorization: `Bearer ${accessToken}` }
-  });
-  const itemsJson = await itemsRes.json();
+  const url = `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items?$expand=fields&${query}`;
 
+  console.log("最終リクエストURL:", url);
+  console.log("使用トークン:", accessToken);
+
+  const itemsRes = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  });
+
+  const itemsJson = await itemsRes.json();
   console.log("対象アイテム:", itemsJson.value);
   return itemsJson.value;
 }
