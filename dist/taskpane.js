@@ -166,7 +166,7 @@ async function fetchCardStatusForCurrentUser(accessToken, userPrincipalName) {
   itemsJson.value.forEach(item => {
     const raw = item.fields?.user_id ?? '';
     const norm = String(raw).normalize('NFKC').trim().toLowerCase();
-    console.log('user_id:', raw, '| normalized:', norm, '| codes:', Array.from(norm).map(c => c.charCodeAt(0)));
+    // console.log('user_id:', raw, '| normalized:', norm, '| codes:', Array.from(norm).map(c => c.charCodeAt(0)));
   });
 
   // フィルタ処理（user_idが一致し、is_fetchedがfalse）
@@ -180,15 +180,44 @@ async function fetchCardStatusForCurrentUser(accessToken, userPrincipalName) {
     const rawFetched = item.fields?.is_fetched;
     const fetchedMatch = rawFetched === false || rawFetched === 'false';
 
-    console.log(
-      `[Check] user_id: "${rawUserId}" → "${normUserId}" | match: ${userMatch}`,
-      `| is_fetched: ${rawFetched} | match: ${fetchedMatch}`
-    );
+    // console.log(
+    //   `[Check] user_id: "${rawUserId}" → "${normUserId}" | match: ${userMatch}`,
+    //   `| is_fetched: ${rawFetched} | match: ${fetchedMatch}`
+    // );
 
     return userMatch && fetchedMatch;
   });
 
   console.log("対象アイテム:", filteredItems);
+
+  // cardListItems: 最初のリスト（trn_card_fetch_status など）から取得した複数のレコード
+  const cardListItems = itemsJson.value; // ← 例：filteredItems や取得済みの配列
+
+  const personListId = "875591f714-ffdc-4787-82ce-8f4be141504c"; // リストID（今わかった値）
+  // meishiPersonList: trn_meishi_person から取得した全レコード
+  const personUrl = `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${personListId}/items?$expand=fields`;
+  const personRes = await fetch(personUrl, {
+    headers: { Authorization: `Bearer ${accessToken}` }
+  });
+  const personJson = await personRes.json();
+
+  // person_id でマッチするデータを1つずつ取得
+  const mergedResults = cardListItems.map(cardItem => {
+    const cardId = String(cardItem.fields?.card_id).trim();
+
+    // person_idと一致する名刺情報を検索
+    const person = personJson.value.find(personItem =>
+      String(personItem.fields?.person_id).trim() === cardId
+    );
+
+    return {
+      card: cardItem,
+      person: person || null
+    };
+  });
+
+  console.log("結合済みレコード一覧:", mergedResults);
+
   return itemsJson.value;
 }
 
