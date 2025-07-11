@@ -164,8 +164,9 @@ async function fetchCardStatusForCurrentUser(accessToken, userPrincipalName) {
   console.log("対象アイテム:", itemsJson.value);
 
   itemsJson.value.forEach(item => {
-    console.log('user_id:', item.fields?.user_id, '| typeof:', typeof item.fields?.user_id);
-    console.log('is_fetched:', item.fields?.is_fetched, '| typeof:', typeof item.fields?.is_fetched);
+    const raw = item.fields?.user_id ?? '';
+    const norm = String(raw).normalize('NFKC').trim().toLowerCase();
+    console.log('user_id:', raw, '| normalized:', norm, '| codes:', Array.from(norm).map(c => c.charCodeAt(0)));
   });
 
   // フィルタ処理（user_idが一致し、is_fetchedがfalse）
