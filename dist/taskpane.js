@@ -222,36 +222,7 @@ async function fetchCardStatusForCurrentUser(accessToken, userPrincipalName) {
 
   console.log("結合済みレコード一覧:", mergedResults);
 
-  for (const person of mergedResults) {
-    const res = await fetch("https://graph.microsoft.com/v1.0/me/contacts", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${accessToken}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        givenName: person.full_name,
-        companyName: person.company_name,
-        jobTitle: person.position,
-        department: person.department,
-        businessPhones: [person.phone],
-        emailAddresses: [
-          {
-            address: person.email,
-            name: person.full_name
-          }
-        ]
-      })
-    });
-
-    if (res.ok) {
-      const contact = await res.json();
-      console.log(`登録成功: ${person.full_name}`);
-    } else {
-      const error = await res.json();
-      console.error(`登録失敗: ${person.full_name}`, error);
-    }
-  }
+  await addContactsToBCSFolder(accessToken, mergedResults);
 
   return itemsJson.value;
 }
@@ -273,6 +244,67 @@ function base64URLEncode(buffer) {
     .replace(/=+$/, "");
 }
 
+async function addContactsToBCSFolder(accessToken, personList) {
+  // Step 1: 「BCS」フォルダIDを取得
+  const folderListRes = await fetch("https://graph.microsoft.com/v1.0/me/contactFolders", {
+    headers: {
+      "Authorization": `Bearer ${accessToken}`
+    }
+  });
+
+  if (!folderListRes.ok) {
+    console.error("フォルダ一覧取得失敗:", await folderListRes.text());
+    return;
+  }
+
+  const folderList = await folderListRes.json();
+  const bcsFolder = folderList.value.find(f => f.displayName === "BCS");
+
+  if (!bcsFolder) {
+    console.error("BCSフォルダが見つかりません");
+    return;
+  }
+
+  const folderId = bcsFolder.id;
+
+  // Step 2: 各personデータを順番に追加
+  for (const person of personList) {
+    // null またはマッピングされていない場合はスキップ
+    if (!person || !person.full_name) {
+      console.warn("無効なデータのためスキップ:", person);
+      continue;
+    }
+
+    const res = await fetch(`https://graph.microsoft.com/v1.0/me/contactFolders/${folderId}/contacts`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${accessToken}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        givenName: person.full_name,
+        companyName: person.company_name,
+        jobTitle: person.position,
+        department: person.department,
+        businessPhones: [person.phone],
+        emailAddresses: [
+          {
+            address: person.email,
+            name: person.full_name
+          }
+        ]
+      })
+    });
+
+    if (res.ok) {
+      const result = await res.json();
+      console.log(`登録成功：${person.full_name}`);
+    } else {
+      const error = await res.json();
+      console.error(`登録失敗：${person.full_name}`, error);
+    }
+  }
+}
 
 // Office.onReady((info) => {
 //   if (info.host === Office.HostType.Outlook && Office.context.mailbox?.item) {
