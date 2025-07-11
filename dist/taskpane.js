@@ -170,13 +170,23 @@ async function fetchCardStatusForCurrentUser(accessToken, userPrincipalName) {
   });
 
   // フィルタ処理（user_idが一致し、is_fetchedがfalse）
-  const filteredItems = itemsJson.value.filter(item =>
-    String(item.fields?.user_id)
-    .normalize('NFKC')  // ← 正規化
-    .trim()             // ← 空白除去（ここが後！）
-    .toLowerCase() === 'naoto-fujiwara' //&&
-    // item.fields?.is_fetched === false
-  );
+  const targetUserId = 'naoto-fujiwara';
+
+  const filteredItems = itemsJson.value.filter(item => {
+    const rawUserId = String(item.fields?.user_id ?? '');
+    const normUserId = rawUserId.normalize('NFKC').trim().toLowerCase();
+    const userMatch = normUserId === targetUserId;
+
+    const rawFetched = item.fields?.is_fetched;
+    const fetchedMatch = rawFetched === false || rawFetched === 'false';
+
+    console.log(
+      `[Check] user_id: "${rawUserId}" → "${normUserId}" | match: ${userMatch}`,
+      `| is_fetched: ${rawFetched} | match: ${fetchedMatch}`
+    );
+
+    return userMatch && fetchedMatch;
+  });
 
   console.log("対象アイテム:", filteredItems);
   return itemsJson.value;
