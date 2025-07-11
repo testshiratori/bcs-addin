@@ -193,7 +193,7 @@ async function fetchCardStatusForCurrentUser(accessToken, userPrincipalName) {
   // cardListItems: 最初のリスト（trn_card_fetch_status など）から取得した複数のレコード
   const cardListItems = itemsJson.value; // ← 例：filteredItems や取得済みの配列
 
-  const personListId = "875591f714-ffdc-4787-82ce-8f4be141504c"; // リストID（今わかった値）
+  const personListId = "591f8714-ffdc-4787-82ce-8f4be141504c";
   // meishiPersonList: trn_meishi_person から取得した全レコード
   const personUrl = `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${personListId}/items?$expand=fields`;
   const personRes = await fetch(personUrl, {
