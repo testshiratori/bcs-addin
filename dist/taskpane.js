@@ -282,15 +282,15 @@ async function addContactsToBCSFolder(accessToken, personList) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        givenName: person.full_name,
-        companyName: person.company_name,
-        jobTitle: person.position,
-        department: person.department,
-        businessPhones: [person.phone],
+        givenName: person.fields.full_name,
+        companyName: person.fields.company_name,
+        jobTitle: person.fields.position,
+        department: person.fields.department,
+        businessPhones: [person.fields.phone],
         emailAddresses: [
           {
-            address: person.email,
-            name: person.full_name
+            address: person.fields.email,
+            name: person.fields.full_name
           }
         ]
       })
