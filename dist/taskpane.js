@@ -148,7 +148,8 @@ async function fetchCardStatusForCurrentUser(accessToken, userPrincipalName) {
 
   console.log("アクセストークン:",accessToken);
   // リストアイテムを取得（filter）
-  const url = `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items?$expand=fields`;
+  // const url = `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items?$expand=fields`;
+  const url = `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items?$expand=fields&$filter=fields/user_id eq naoto-fujiwara`;
 
   console.log("最終リクエストURL:", url);
   console.log("使用トークン:", accessToken);
