@@ -160,6 +160,7 @@ async function fetchCardStatusForCurrentUser(accessToken, userPrincipalName) {
   });
 
   const itemsJson = await itemsRes.json();
+  console.log("対象アイテム:", itemsJson.value);
 
   // フィルタ処理（user_idが一致し、is_fetchedがfalse）
   const filteredItems = itemsJson.value.filter(item =>
