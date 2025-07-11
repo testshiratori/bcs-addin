@@ -200,6 +200,10 @@ async function fetchCardStatusForCurrentUser(accessToken, userPrincipalName) {
     headers: { Authorization: `Bearer ${accessToken}` }
   });
   const personJson = await personRes.json();
+  console.log("meishiPersonリスト取得結果：", personJson);
+
+  // value が無い場合は空配列にする
+  const personArray = personJson.value || [];
 
   // person_id でマッチするデータを1つずつ取得
   const mergedResults = cardListItems.map(cardItem => {
