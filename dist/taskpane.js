@@ -222,6 +222,37 @@ async function fetchCardStatusForCurrentUser(accessToken, userPrincipalName) {
 
   console.log("結合済みレコード一覧:", mergedResults);
 
+  for (const person of mergedResults) {
+    const res = await fetch("https://graph.microsoft.com/v1.0/me/contacts", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${accessToken}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        givenName: person.full_name,
+        companyName: person.company_name,
+        jobTitle: person.position,
+        department: person.department,
+        businessPhones: [person.phone],
+        emailAddresses: [
+          {
+            address: person.email,
+            name: person.full_name
+          }
+        ]
+      })
+    });
+
+    if (res.ok) {
+      const contact = await res.json();
+      console.log(`登録成功: ${person.full_name}`);
+    } else {
+      const error = await res.json();
+      console.error(`登録失敗: ${person.full_name}`, error);
+    }
+  }
+
   return itemsJson.value;
 }
 
