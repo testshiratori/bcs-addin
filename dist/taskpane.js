@@ -268,12 +268,15 @@ async function addContactsToBCSFolder(accessToken, personList) {
   const folderId = bcsFolder.id;
 
   // Step 2: 各personデータを順番に追加
-  for (const person of personList) {
-    // null またはマッピングされていない場合はスキップ
-    if (!person || !person.full_name) {
-      console.warn("無効なデータのためスキップ:", person);
+  for (const item of personList) {
+    const person = item.person;
+
+    if (!person || !person.fields?.full_name) {
+      console.warn("無効なデータのためスキップ:", item);
       continue;
     }
+
+    const f = person.fields;
 
     const res = await fetch(`https://graph.microsoft.com/v1.0/me/contactFolders/${folderId}/contacts`, {
       method: "POST",
@@ -282,26 +285,25 @@ async function addContactsToBCSFolder(accessToken, personList) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        givenName: person.fields.full_name,
-        companyName: person.fields.company_name,
-        jobTitle: person.fields.position,
-        department: person.fields.department,
-        businessPhones: [person.fields.phone],
+        givenName: f.full_name,
+        companyName: f.company_name,
+        jobTitle: f.position,
+        department: f.department,
+        businessPhones: [f.phone],
         emailAddresses: [
           {
-            address: person.fields.email,
-            name: person.fields.full_name
+            address: f.email,
+            name: f.full_name
           }
         ]
       })
     });
 
     if (res.ok) {
-      const result = await res.json();
-      console.log(`登録成功：${person.full_name}`);
+      console.log(`登録成功：${f.full_name}`);
     } else {
       const error = await res.json();
-      console.error(`登録失敗：${person.full_name}`, error);
+      console.error(`登録失敗：${f.full_name}`, error);
     }
   }
 }
