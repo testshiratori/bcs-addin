@@ -148,11 +148,7 @@ async function fetchCardStatusForCurrentUser(accessToken, userPrincipalName) {
 
   console.log("アクセストークン:",accessToken);
   // リストアイテムを取得（filter）
-  const filter = `$filter=fields/user_id eq '${userId}' and fields/is_fetched eq false`;
-  const query = encodeURIComponent(filter);
-  
-  const url = `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items?$expand=fields&${query}`;
-  // const url = `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items?$expand=fields`;
+  const url = `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items?$expand=fields`;
 
   console.log("最終リクエストURL:", url);
   console.log("使用トークン:", accessToken);
@@ -164,7 +160,14 @@ async function fetchCardStatusForCurrentUser(accessToken, userPrincipalName) {
   });
 
   const itemsJson = await itemsRes.json();
-  console.log("対象アイテム:", itemsJson.value);
+
+  // フィルタ処理（user_idが一致し、is_fetchedがfalse）
+  const filteredItems = itemsJson.value.filter(item =>
+    item.fields.user_id === 'naoto-fujiwara' &&
+    item.fields.is_fetched === false
+  );
+
+  console.log("対象アイテム:", filteredItems);
   return itemsJson.value;
 }
 
