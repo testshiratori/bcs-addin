@@ -270,6 +270,7 @@ async function addContactsToBCSFolder(accessToken, personList) {
   // Step 2: 各personデータを順番に追加
   for (const item of personList) {
     const person = item.person;
+    const card = item.card;
 
     if (!person || !person.fields?.full_name) {
       console.warn("無効なデータのためスキップ:", item);
@@ -277,6 +278,7 @@ async function addContactsToBCSFolder(accessToken, personList) {
     }
 
     const f = person.fields;
+    const cf = card.fields;
 
     const res = await fetch(`https://graph.microsoft.com/v1.0/me/contactFolders/${folderId}/contacts`, {
       method: "POST",
@@ -301,10 +303,36 @@ async function addContactsToBCSFolder(accessToken, personList) {
 
     if (res.ok) {
       console.log(`登録成功：${f.full_name}`);
+
+      await updateIsFetchedTrue(accessToken, cf.id);
     } else {
       const error = await res.json();
       console.error(`登録失敗：${f.full_name}`, error);
     }
+  }
+}
+
+async function updateIsFetchedTrue(accessToken, itemId) {
+  const siteId = "320b6b44-40b6-4265-b314-afdba6eb20ba"; // サイトID（同時に取得されている）
+  const listId = "e1999f46-92c8-4978-bb3c-0f5826e7143f";
+  const url = `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items/${itemId}/fields`;
+
+  const res = await fetch(url, {
+    method: "PATCH",
+    headers: {
+      "Authorization": `Bearer ${accessToken}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      is_fetched: true
+    })
+  });
+
+  if (res.ok) {
+    console.log(`✅ is_fetched を true に更新: ID=${itemId}`);
+  } else {
+    const err = await res.json();
+    console.error(`❌ 更新失敗: ID=${itemId}`, err);
   }
 }
 
