@@ -164,8 +164,8 @@ async function fetchCardStatusForCurrentUser(accessToken, userPrincipalName) {
 
   // フィルタ処理（user_idが一致し、is_fetchedがfalse）
   const filteredItems = itemsJson.value.filter(item =>
-    item.fields.user_id === 'naoto-fujiwara' &&
-    item.fields.is_fetched === false
+    item.fields?.user_id === userId &&
+    item.fields?.is_fetched === false
   );
 
   console.log("対象アイテム:", filteredItems);
