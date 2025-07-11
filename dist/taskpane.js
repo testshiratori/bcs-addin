@@ -174,8 +174,8 @@ async function fetchCardStatusForCurrentUser(accessToken, userPrincipalName) {
     String(item.fields?.user_id)
     .normalize('NFKC')  // ← 正規化
     .trim()             // ← 空白除去（ここが後！）
-    .toLowerCase() === 'naoto-fujiwara' &&
-    item.fields?.is_fetched === false
+    .toLowerCase() === 'naoto-fujiwara' //&&
+    // item.fields?.is_fetched === false
   );
 
   console.log("対象アイテム:", filteredItems);
