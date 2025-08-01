@@ -4,11 +4,11 @@
            xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
            xsi:type="MailApp">
   <Id>448e8e65-5412-4c88-bfd4-0290f4b56b2b</Id>
-  <Version>1.0.0.6</Version>
+  <Version>1.0.0.8</Version>
   <ProviderName>Contoso</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="共有連絡帳の最新化 Ver.1.0.0.6"/>
-  <Description DefaultValue="Adds a custom ribbon button Ver.1.0.0.6"/>
+  <DisplayName DefaultValue="共有連絡帳の最新化 Ver.1.0.0.8"/>
+  <Description DefaultValue="Adds a custom ribbon button Ver.1.0.0.8"/>
   <IconUrl DefaultValue="https://white-forest-07ab38200.1.azurestaticapps.net/assets/icon-64.png"/>
   <HighResolutionIconUrl DefaultValue="https://white-forest-07ab38200.1.azurestaticapps.net/assets/icon-128.png"/>
   <SupportUrl DefaultValue="https://white-forest-07ab38200.1.azurestaticapps.net/help"/>
@@ -72,21 +72,6 @@
                     <SourceLocation resid="Taskpane.Url"/>
                   </Action>
                 </Control>
-                <Control xsi:type="Button" id="ActionButton">
-                  <Label resid="ActionButton.Label"/>
-                  <Supertip>
-                    <Title resid="ActionButton.Label"/>
-                    <Description resid="ActionButton.Tooltip"/>
-                  </Supertip>
-                  <Icon>
-                    <bt:Image size="16" resid="Icon.16x16"/>
-                    <bt:Image size="32" resid="Icon.32x32"/>
-                    <bt:Image size="80" resid="Icon.80x80"/>
-                  </Icon>
-                  <Action xsi:type="ExecuteFunction">
-                    <FunctionName>action</FunctionName>
-                  </Action>
-                </Control>
               </Group>
             </OfficeTab>
           </ExtensionPoint>
@@ -146,7 +131,7 @@
           <Scope>profile</Scope>
           <Scope>offline_access</Scope>
           <Scope>Contacts.ReadWrite</Scope>
-          <Scope>Sites.Read.All</Scope>
+          <Scope>Sites.ReadWrite.All</Scope>
         </Scopes>
       </WebApplicationInfo>
     </VersionOverrides>
