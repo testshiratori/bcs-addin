@@ -280,35 +280,79 @@ async function addContactsToBCSFolder(accessToken, personList) {
     const f = person.fields;
     const cf = card.fields;
 
-    const res = await fetch(`https://graph.microsoft.com/v1.0/me/contactFolders/${folderId}/contacts`, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${accessToken}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        givenName: f.full_name,
-        companyName: f.company_name,
-        jobTitle: f.position,
-        department: f.department,
-        businessPhones: [f.phone],
-        emailAddresses: [
-          {
-            address: f.email,
-            name: f.full_name
+    if(cf.old_id)
+    {
+      const res = await fetch(`https://graph.microsoft.com/v1.0/me/contactFolders/${folderId}/contacts`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${accessToken}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          givenName: f.full_name,
+          companyName: f.company_name,
+          jobTitle: f.position,
+          department: f.department,
+          businessPhones: [f.phone],
+          emailAddresses: [
+            {
+              address: f.email,
+              name: f.full_name
+            }
+          ]
+        })
+      });
+
+      if (res.ok) {
+        console.log(`登録成功：${f.full_name}`);
+
+        await updateIsFetchedTrue(accessToken, cf.id);
+      } else {
+        const error = await res.json();
+        console.error(`登録失敗：${f.full_name}`, error);
+      }
+    }else{
+      try {
+        // BCSフォルダ内の連絡先を取得
+        const contactListRes = await fetch(`https://graph.microsoft.com/v1.0/me/contactFolders/${folderId}/contacts`, {
+          headers: {
+            "Authorization": `Bearer ${accessToken}`
           }
-        ]
-      })
-    });
+        });
 
-    if (res.ok) {
-      console.log(`登録成功：${f.full_name}`);
+        if (contactListRes.ok) {
+          const contactList = await contactListRes.json();
+          const oldContact = contactList.value.find(c => {
+            const emails = c.emailAddresses?.map(e => e.address.toLowerCase()) || [];
+            return emails.includes(cf.old_id.toLowerCase()); // 例：old_id をメールアドレスと一致とみなす場合
+          });
 
-      await updateIsFetchedTrue(accessToken, cf.id);
-    } else {
-      const error = await res.json();
-      console.error(`登録失敗：${f.full_name}`, error);
+          if (oldContact) {
+            // 削除
+            const deleteRes = await fetch(`https://graph.microsoft.com/v1.0/me/contacts/${oldContact.id}`, {
+              method: "DELETE",
+              headers: {
+                "Authorization": `Bearer ${accessToken}`
+              }
+            });
+
+            if (deleteRes.ok) {
+              console.log(`🗑️ 旧連絡先を削除しました: ${cf.old_id}`);
+            } else {
+              console.warn(`⚠️ 旧連絡先削除失敗: ${cf.old_id}`, await deleteRes.text());
+            }
+          } else {
+            console.log(`ℹ️ 該当する旧連絡先が見つかりませんでした: ${cf.old_id}`);
+          }
+        } else {
+          console.warn("⚠️ BCSフォルダの連絡先取得失敗", await contactListRes.text());
+        }
+      } catch (err) {
+        console.error("❌ 旧連絡先削除処理でエラー:", err);
+      }
     }
+    
+
   }
 }
 
