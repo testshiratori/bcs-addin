@@ -281,7 +281,7 @@ async function addContactsToBCSFolder(accessToken, personList) {
     const f = person.fields;
     const cf = card.fields;
 
-    if(cf.old_id)
+    if(!cf.old_id || cf.old_id.trim() === "")
     {
       if(item.is_fetched === false){
         const res = await fetch(`https://graph.microsoft.com/v1.0/me/contactFolders/${folderId}/contacts`, {
