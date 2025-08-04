@@ -326,12 +326,18 @@ async function addContactsToBCSFolder(accessToken, personList) {
         if (contactListRes.ok) {
           const contactList = await contactListRes.json();
           const oldContact = contactList.value.find(c => {
-            const emails = (c.emailAddresses || [])
-              .map(e => (e?.address ? e.address.toLowerCase() : null))
-              .filter(addr => addr !== null);
-
-            return f.email && emails.includes(f.email.toLowerCase());
+            const givenName = c.givenName?.toString().trim();
+            const cfId = String(cf.id).trim();
+            return givenName === cfId;
           });
+          //メールアドレスで比較
+          // const oldContact = contactList.value.find(c => {
+          //   const emails = (c.emailAddresses || [])
+          //     .map(e => (e?.address ? e.address.toLowerCase() : null))
+          //     .filter(addr => addr !== null);
+
+          //   return f.email && emails.includes(f.email.toLowerCase());
+          // });
           // const oldContact = contactList.value.find(c => {
           //   const emails = c.emailAddresses?.map(e => e.address.toLowerCase()) || [];
           //   return emails.includes(cf.old_id.toLowerCase()); // 例：old_id をメールアドレスと一致とみなす場合
