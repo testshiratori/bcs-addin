@@ -177,16 +177,17 @@ async function fetchCardStatusForCurrentUser(accessToken, userPrincipalName) {
     const normUserId = rawUserId.normalize('NFKC').trim().toLowerCase();
     const userMatch = normUserId === targetUserId;
 
-    const rawFetched = item.fields?.is_fetched;
-    const fetchedMatch = rawFetched === false || rawFetched === 'false';
+    // const rawFetched = item.fields?.is_fetched;
+    // const fetchedMatch = rawFetched === false || rawFetched === 'false';
 
     // console.log(
     //   `[Check] user_id: "${rawUserId}" → "${normUserId}" | match: ${userMatch}`,
     //   `| is_fetched: ${rawFetched} | match: ${fetchedMatch}`
     // );
 
-    return userMatch && fetchedMatch;
-  });
+    // return userMatch && fetchedMatch;
+    return userMatch;
+  }); 
 
   console.log("対象アイテム:", filteredItems);
 
@@ -282,34 +283,36 @@ async function addContactsToBCSFolder(accessToken, personList) {
 
     if(cf.old_id)
     {
-      const res = await fetch(`https://graph.microsoft.com/v1.0/me/contactFolders/${folderId}/contacts`, {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${accessToken}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          givenName: f.full_name,
-          companyName: f.company_name,
-          jobTitle: f.position,
-          department: f.department,
-          businessPhones: [f.phone],
-          emailAddresses: [
-            {
-              address: f.email,
-              name: f.full_name
-            }
-          ]
-        })
-      });
+      if(item.is_fetched === false){
+        const res = await fetch(`https://graph.microsoft.com/v1.0/me/contactFolders/${folderId}/contacts`, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${accessToken}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            givenName: f.full_name,
+            companyName: f.company_name,
+            jobTitle: f.position,
+            department: f.department,
+            businessPhones: [f.phone],
+            emailAddresses: [
+              {
+                address: f.email,
+                name: f.full_name
+              }
+            ]
+          })
+        });
 
-      if (res.ok) {
-        console.log(`登録成功：${f.full_name}`);
+        if (res.ok) {
+          console.log(`登録成功：${f.full_name}`);
 
-        await updateIsFetchedTrue(accessToken, cf.id);
-      } else {
-        const error = await res.json();
-        console.error(`登録失敗：${f.full_name}`, error);
+          await updateIsFetchedTrue(accessToken, cf.id);
+        } else {
+          const error = await res.json();
+          console.error(`登録失敗：${f.full_name}`, error);
+        }
       }
     }else{
       try {
