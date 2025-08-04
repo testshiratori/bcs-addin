@@ -353,12 +353,12 @@ async function addContactsToBCSFolder(accessToken, personList) {
             });
 
             if (deleteRes.ok) {
-              console.log(`🗑️ 旧連絡先を削除しました: ${cf.old_id}`);
+              console.log(`🗑️ 旧連絡先を削除しました: ${cf.card_id}`);
             } else {
-              console.warn(`⚠️ 旧連絡先削除失敗: ${cf.old_id}`, await deleteRes.text());
+              console.warn(`⚠️ 旧連絡先削除失敗: ${cf.card_id}`, await deleteRes.text());
             }
           } else {
-            console.log(`ℹ️ 該当する旧連絡先が見つかりませんでした: ${cf.old_id}`);
+            console.log(`ℹ️ 該当する旧連絡先が見つかりませんでした: ${cf.card_id}`);
           }
         } else {
           console.warn("⚠️ BCSフォルダの連絡先取得失敗", await contactListRes.text());
