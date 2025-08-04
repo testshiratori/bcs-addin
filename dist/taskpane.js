@@ -326,7 +326,7 @@ async function addContactsToBCSFolder(accessToken, personList) {
         if (contactListRes.ok) {
           const contactList = await contactListRes.json();
           const oldContact = contactList.value.find(c => {
-            const givenName = c.givenName?.toString().trim();
+            const givenName = c.categories[0]?.toString().trim();
             const cfId = String(cf.card_id).trim();
             return givenName === cfId;
           });
