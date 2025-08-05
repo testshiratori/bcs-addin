@@ -301,7 +301,8 @@ async function addContactsToBCSFolder(accessToken, personList) {
                 address: f.email,
                 name: f.full_name
               }
-            ]
+            ],
+            yomiGivenName:f.furigana
           })
         });
 

@@ -4,11 +4,11 @@
            xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
            xsi:type="MailApp">
   <Id>448e8e65-5412-4c88-bfd4-0290f4b56b3b</Id>
-  <Version>1.0.0.6</Version>
+  <Version>1.0.0.9</Version>
   <ProviderName>Contoso</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="共有連絡帳テスト"/>
-  <Description DefaultValue="Adds a custom ribbon button Ver.1.0.0.6"/>
+  <Description DefaultValue="Adds a custom ribbon button Ver.1.0.0.9"/>
   <IconUrl DefaultValue="https://white-forest-07ab38200.1.azurestaticapps.net/assets/icon-64.png"/>
   <HighResolutionIconUrl DefaultValue="https://white-forest-07ab38200.1.azurestaticapps.net/assets/icon-128.png"/>
   <SupportUrl DefaultValue="https://white-forest-07ab38200.1.azurestaticapps.net/help"/>
@@ -96,6 +96,29 @@
               <Group id="msgComposeGroup1">
                 <Label resid="GroupLabel1"/>
                 <Control xsi:type="Button" id="msgComposeOpenPaneButton1">
+                  <Label resid="TaskpaneButton.Label1"/>
+                  <Supertip>
+                    <Title resid="TaskpaneButton.Label1"/>
+                    <Description resid="TaskpaneButton.Tooltip1"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16x16_2"/>
+                    <bt:Image size="32" resid="Icon.32x32_2"/>
+                    <bt:Image size="80" resid="Icon.80x80_2"/>
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <SourceLocation resid="Taskpane.Url"/>
+                  </Action>
+                </Control>
+              </Group>
+            </OfficeTab>
+          </ExtensionPoint>
+
+          <ExtensionPoint xsi:type="ContactReadCommandSurface">
+            <OfficeTab id="TabDefault3">
+              <Group id="contactReadGroup1">
+                <Label resid="GroupLabel1"/>
+                <Control xsi:type="Button" id="contactReadOpenPaneButton1">
                   <Label resid="TaskpaneButton.Label1"/>
                   <Supertip>
                     <Title resid="TaskpaneButton.Label1"/>
