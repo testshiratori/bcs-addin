@@ -20,6 +20,11 @@ const responseMode = "query";
 let code_verifier = "";
 let code_challenge = "";
 
+
+function isOfficeHost() {
+  return typeof Office !== "undefined"
+      && Office.context?.ui?.displayDialogAsync;
+}
 /**
  * 認証フロー実行：ダイアログ表示 → コード受信 → トークン取得
  */
@@ -49,26 +54,45 @@ async function runAuthFlow() {
   console.log("表示するURL: ", dialogUrl);
 
   // 認証ダイアログを auth.html 経由で表示
-  Office.context.ui.displayDialogAsync(
-    dialogUrl,
-    { height: 50, width: 50 },
-    (asyncResult) => {
-      if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-        console.error("❌ ダイアログ失敗:", asyncResult.error.message);
+  if (isOfficeHost()) {
+    // ★ Outlook Web アドイン内（今まで通り）
+    Office.context.ui.displayDialogAsync(dialogUrl, { height: 50, width: 50 }, (ar) => {
+      if (ar.status !== Office.AsyncResultStatus.Succeeded) {
+        console.error("❌ ダイアログ失敗:", ar.error.message);
         return;
       }
-
-      console.log("✅ ダイアログ表示成功");
-      const dialog = asyncResult.value;
-
-      dialog.addEventHandler(Office.EventType.DialogMessageReceived, async (arg) => {
-        dialog.close();
+      const dlg = ar.value;
+      dlg.addEventHandler(Office.EventType.DialogMessageReceived, async (arg) => {
+        dlg.close();
         const authCode = arg.message;
-        console.log("認可コードを受信:", authCode);
         await exchangeCodeForToken(authCode);
       });
-    }
-  );
+    });
+  } else {
+    // ★ WebView2（VSTO のタスクペイン）：同一WebView内に遷移 → auth.html から postMessage で戻す
+    sessionStorage.setItem("authReturnUrl", location.href); // 戻り先
+    location.href = dialogUrl;
+  }
+  // Office.context.ui.displayDialogAsync(
+  //   dialogUrl,
+  //   { height: 50, width: 50 },
+  //   (asyncResult) => {
+  //     if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+  //       console.error("❌ ダイアログ失敗:", asyncResult.error.message);
+  //       return;
+  //     }
+
+  //     console.log("✅ ダイアログ表示成功");
+  //     const dialog = asyncResult.value;
+
+  //     dialog.addEventHandler(Office.EventType.DialogMessageReceived, async (arg) => {
+  //       dialog.close();
+  //       const authCode = arg.message;
+  //       console.log("認可コードを受信:", authCode);
+  //       await exchangeCodeForToken(authCode);
+  //     });
+  //   }
+  // );
 }
 
 /**

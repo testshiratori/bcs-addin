@@ -5,19 +5,30 @@
   <title>Auth Redirect → Microsoft Login</title>
   <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
   <script>
-    // Office.onReady().then(() => {
-    //   const params = new URLSearchParams(window.location.search);
-    //   const authUrl = params.get("authUrl");
+    const p = new URL(location.href).searchParams;
+    const code = p.get("code");
 
-    //   if (authUrl) {
-    //     console.log("✅ auth.html: リダイレクト開始 →", authUrl);
-    //     window.location.replace(decodeURIComponent(authUrl));
-    //   } else {
-    //     document.body.innerHTML =
-    //       "<h2 style='color:red'>authUrl が指定されていません</h2>";
-    //     console.error("authUrl パラメータが見つかりません");
-    //   }
-    // });
+    function postBack(msg) {
+      // WebView2
+      if (window.chrome && window.chrome.webview) {
+        window.chrome.webview.postMessage("auth_code:" + msg);
+        // 元の画面に戻る（任意）
+        const back = sessionStorage.getItem("authReturnUrl");
+        if (back) location.href = back;
+        return;
+      }
+      // Office ダイアログ
+      if (window.Office?.context?.ui?.messageParent) {
+        Office.context.ui.messageParent(msg);
+        return;
+      }
+      // 通常ブラウザのフォールバック
+      window.opener?.postMessage({ type:"auth_code", code: msg }, "*");
+    }
+
+    if (code) postBack(code);
+  </script>
+  <!-- <script>
     Office.onReady().then(() => {
       const params = new URLSearchParams(window.location.search);
       const code = params.get("code");
@@ -34,7 +45,7 @@
         document.body.innerHTML = "<h2 style='color:red'>認証情報がありません</h2>";
       }
     });
-  </script>
+  </script> -->
 </head>
 <body>
   リダイレクト中...
