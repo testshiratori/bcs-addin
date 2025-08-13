@@ -1,3 +1,62 @@
+<!-- <!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Auth</title>
+  <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+</head>
+<body>リダイレクト中…</body>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const url = new URL(location.href);
+    const q   = url.searchParams;
+    const authUrlParam = q.get('authUrl');
+    const code  = q.get('code');
+    const error = q.get('error');
+
+    console.log('[auth.html] authUrlParam?', !!authUrlParam, ' code?', !!code, ' error?', !!error);
+
+    // 1) 初回：認可URLへ遷移
+    if (authUrlParam) {
+      const authUrl = decodeURIComponent(authUrlParam);
+      console.log('[auth.html] redirect to:', authUrl);
+      // まず assign、失敗したら replace、最後に setTimeout でフォールバック
+      try { location.assign(authUrl); } catch {}
+      setTimeout(() => { try { location.replace(authUrl); } catch {} }, 0);
+      return;
+    }
+
+    // 2) 戻り：code をホストに返す
+    function postBack(message) {
+      // WebView2 (COM)
+      if (window.chrome && window.chrome.webview) {
+        window.chrome.webview.postMessage('auth_code:' + message);
+        const back = sessionStorage.getItem('authReturnUrl');
+        if (back) location.replace(back);
+        return;
+      }
+      // Office ダイアログ (Web アドイン)
+      if (window.Office?.context?.ui?.messageParent) {
+        Office.context.ui.messageParent(message);
+        return;
+      }
+      // フォールバック
+      window.opener?.postMessage({ type: 'auth_code', code: message }, '*');
+    }
+
+    if (error) {
+      console.warn('[auth.html] error:', error);
+      postBack('auth_error:' + error);
+    } else if (code) {
+      console.log('[auth.html] got code');
+      postBack(code);
+    } else {
+      console.warn('[auth.html] neither authUrl nor code');
+    }
+  });
+</script>
+</html> -->
+<!-- ↑COMアドイン用20250813 -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -5,30 +64,6 @@
   <title>Auth Redirect → Microsoft Login</title>
   <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
   <script>
-    const p = new URL(location.href).searchParams;
-    const code = p.get("code");
-
-    function postBack(msg) {
-      // WebView2
-      if (window.chrome && window.chrome.webview) {
-        window.chrome.webview.postMessage("auth_code:" + msg);
-        // 元の画面に戻る（任意）
-        const back = sessionStorage.getItem("authReturnUrl");
-        if (back) location.href = back;
-        return;
-      }
-      // Office ダイアログ
-      if (window.Office?.context?.ui?.messageParent) {
-        Office.context.ui.messageParent(msg);
-        return;
-      }
-      // 通常ブラウザのフォールバック
-      window.opener?.postMessage({ type:"auth_code", code: msg }, "*");
-    }
-
-    if (code) postBack(code);
-  </script>
-  <!-- <script>
     Office.onReady().then(() => {
       const params = new URLSearchParams(window.location.search);
       const code = params.get("code");
@@ -45,7 +80,7 @@
         document.body.innerHTML = "<h2 style='color:red'>認証情報がありません</h2>";
       }
     });
-  </script> -->
+  </script>
 </head>
 <body>
   リダイレクト中...
